@@ -513,17 +513,287 @@ kbd {
   box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.06);
 }
 
-@media (max-width: 640px) {
+/* Mobile responsiveness - enhanced */
+@media (max-width: 768px) {
   .RetroShell {
-    width: calc(100% - 24px);
-    padding: 18px 0 40px;
+    width: calc(100% - 20px);
+    padding: 16px 0 32px;
   }
 
-  .RetroInput--search {
-    width: 160px;
+  .RetroHeader {
+    padding: 14px 14px 12px;
+  }
+
+  .RetroHeader__topline {
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .RetroBrand {
+    gap: 10px;
+    flex: 1 1 100%;
+  }
+
+  .RetroBrand__badge {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  .RetroTitle {
+    font-size: 22px;
+  }
+
+  .RetroSubtitle {
+    font-size: 13px;
+  }
+
+  .RetroStats {
+    width: 100%;
+    justify-content: space-between;
   }
 
   .StatChip {
-    min-width: 96px;
+    flex: 1;
+    min-width: 90px;
+    padding: 6px 8px;
+  }
+
+  .StatChip__label {
+    font-size: 10px;
+  }
+
+  .StatChip__value {
+    font-size: 16px;
+  }
+
+  .RetroAdd {
+    padding: 10px 10px 8px;
+  }
+
+  .RetroAdd__label {
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+
+  .RetroAdd__row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .RetroInput--main {
+    font-size: 14px;
+    padding: 10px 10px;
+  }
+
+  .RetroBtn {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .RetroToolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .RetroToolbar__right {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .RetroSearch {
+    flex: 1;
+    width: 100%;
+  }
+
+  .RetroInput--search {
+    width: 100%;
+    flex: 1;
+  }
+
+  .RetroListHeader {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 14px;
+    gap: 8px;
+  }
+
+  .RetroSectionTitle {
+    font-size: 13px;
+  }
+
+  .RetroBulkActions {
+    width: 100%;
+    gap: 8px;
+  }
+
+  .RetroBulkActions .RetroBtn {
+    flex: 1;
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  .RetroList {
+    padding: 12px 10px 8px;
+  }
+
+  .TodoRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px 10px;
+  }
+
+  .TodoRow__left {
+    gap: 8px;
+  }
+
+  .TodoRow__checkbox {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .TodoRow__text {
+    font-size: 14px;
+  }
+
+  .TodoRow__right {
+    width: 100%;
+    gap: 6px;
+  }
+
+  .TodoRow__right .RetroBtn {
+    flex: 1;
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  .RetroEmpty {
+    grid-template-columns: 52px 1fr;
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .RetroEmpty__frame {
+    width: 52px;
+    height: 52px;
+  }
+
+  .RetroEmpty__icon {
+    font-size: 22px;
+  }
+
+  .RetroEmpty__title {
+    font-size: 14px;
+  }
+
+  .RetroEmpty__hint {
+    font-size: 12px;
+  }
+
+  .RetroFooter {
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 2px;
+  }
+
+  .RetroFootnote {
+    font-size: 11px;
+  }
+
+  .RetroFilters {
+    display: flex;
+    width: 100%;
+    gap: 6px;
+  }
+
+  .RetroBtn--chip {
+    flex: 1;
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .RetroShell {
+    width: calc(100% - 16px);
+    padding: 12px 0 24px;
+  }
+
+  .RetroHeader {
+    padding: 12px 12px 10px;
+    border-radius: 12px;
+  }
+
+  .RetroTitle {
+    font-size: 20px;
+  }
+
+  .RetroSubtitle {
+    font-size: 12px;
+  }
+
+  .StatChip {
+    min-width: 80px;
+    padding: 5px 6px;
+  }
+
+  .StatChip__label {
+    font-size: 9px;
+  }
+
+  .StatChip__value {
+    font-size: 14px;
+  }
+
+  .RetroAdd__help {
+    font-size: 12px;
+  }
+
+  .RetroMain {
+    border-radius: 12px;
+  }
+
+  .RetroBulkActions .RetroBtn {
+    font-size: 10px;
+    padding: 7px 8px;
+  }
+
+  .TodoRow__text {
+    font-size: 13px;
+  }
+
+  .TodoRow__right .RetroBtn {
+    font-size: 10px;
+    padding: 7px 8px;
+  }
+
+  .RetroBtn--chip {
+    font-size: 10px;
+    padding: 7px 8px;
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .RetroShell {
+    padding: 12px 0 24px;
+  }
+
+  .RetroHeader__topline {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .RetroBrand {
+    flex: 0 1 auto;
+  }
+
+  .RetroStats {
+    flex: 0 1 auto;
+    width: auto;
   }
 }
