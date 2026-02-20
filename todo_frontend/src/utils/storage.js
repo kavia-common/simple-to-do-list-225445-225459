@@ -1,4 +1,6 @@
 const STORAGE_KEY = "retro_todo__items_v1";
+const REMINDERS_KEY = "retro_todo__reminders_v1";
+const DISMISSED_KEY = "retro_todo__dismissed_v1";
 
 /**
  * Checks whether a value is a plain object.
@@ -12,7 +14,7 @@ function isObject(v) {
 /**
  * Validates and normalizes a todo record.
  * @param {unknown} v
- * @returns {{id: string, text: string, completed: boolean, createdAt?: string} | null}
+ * @returns {{id: string, text: string, completed: boolean, createdAt?: string, reminderDate?: string, reminderTime?: string} | null}
  */
 function normalizeTodo(v) {
   if (!isObject(v)) return null;
@@ -28,6 +30,14 @@ function normalizeTodo(v) {
 
   if (typeof v.createdAt === "string") {
     todo.createdAt = v.createdAt;
+  }
+
+  if (typeof v.reminderDate === "string") {
+    todo.reminderDate = v.reminderDate;
+  }
+
+  if (typeof v.reminderTime === "string") {
+    todo.reminderTime = v.reminderTime;
   }
 
   return todo;
@@ -56,6 +66,32 @@ export function saveTodos(todos) {
   /** Saves todos to browser localStorage (best-effort, non-throwing). */
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+  } catch {
+    // ignore (storage full/blocked)
+  }
+}
+
+// PUBLIC_INTERFACE
+export function loadDismissedReminders() {
+  /** Loads dismissed reminder IDs from localStorage. Returns empty object when missing/invalid. */
+  try {
+    const raw = window.localStorage.getItem(DISMISSED_KEY);
+    if (!raw) return {};
+
+    const parsed = JSON.parse(raw);
+    if (typeof parsed !== "object" || parsed === null) return {};
+
+    return parsed;
+  } catch {
+    return {};
+  }
+}
+
+// PUBLIC_INTERFACE
+export function saveDismissedReminders(dismissed) {
+  /** Saves dismissed reminder IDs to localStorage (best-effort, non-throwing). */
+  try {
+    window.localStorage.setItem(DISMISSED_KEY, JSON.stringify(dismissed));
   } catch {
     // ignore (storage full/blocked)
   }

@@ -2,6 +2,9 @@ import React, { useId, useMemo, useState } from "react";
 import TodoItem from "./TodoItem";
 import TodoFilters from "./TodoFilters";
 import TodoInput from "./TodoInput";
+import ReminderModal from "./ReminderModal";
+import ReminderNotification from "./ReminderNotification";
+import useReminderChecker from "../hooks/useReminderChecker";
 
 const FILTERS = {
   all: "all",
@@ -14,7 +17,10 @@ export default function TodoApp({ todos, setTodos, stats }) {
   /** Main to-do app surface (header + input + list + controls). */
   const [filter, setFilter] = useState(FILTERS.all);
   const [query, setQuery] = useState("");
+  const [reminderModalTodo, setReminderModalTodo] = useState(null);
   const listHeadingId = useId();
+
+  const { activeReminders, dismissReminder } = useReminderChecker(todos);
 
   const filteredTodos = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -62,6 +68,17 @@ export default function TodoApp({ todos, setTodos, stats }) {
 
   const markAll = (completed) => {
     setTodos((prev) => prev.map((t) => ({ ...t, completed })));
+  };
+
+  const setReminder = (todo, { date, time }) => {
+    setTodos((prev) =>
+      prev.map((t) =>
+        t.id === todo.id
+          ? { ...t, reminderDate: date, reminderTime: time }
+          : t
+      )
+    );
+    setReminderModalTodo(null);
   };
 
   return (
@@ -183,6 +200,7 @@ export default function TodoApp({ todos, setTodos, stats }) {
                   todo={todo}
                   onToggle={toggleTodo}
                   onDelete={deleteTodo}
+                  onSetReminder={(t) => setReminderModalTodo(t)}
                 />
               ))}
             </ul>
@@ -200,6 +218,19 @@ export default function TodoApp({ todos, setTodos, stats }) {
           </span>
         </div>
       </footer>
+
+      {reminderModalTodo && (
+        <ReminderModal
+          todo={reminderModalTodo}
+          onSave={(data) => setReminder(reminderModalTodo, data)}
+          onClose={() => setReminderModalTodo(null)}
+        />
+      )}
+
+      <ReminderNotification
+        reminders={activeReminders}
+        onDismiss={dismissReminder}
+      />
     </div>
   );
 }
