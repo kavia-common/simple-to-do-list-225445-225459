@@ -5,6 +5,8 @@ export default function ReminderNotification({ reminders, onDismiss }) {
   /** Displays active reminder alerts with visual and audio notifications. */
   const hasPlayedRef = useRef(false);
   const audioContextRef = useRef(null);
+  const loopIntervalRef = useRef(null);
+  const loopTimeoutRef = useRef(null);
 
   const playNotificationSound = useCallback(() => {
     try {
@@ -20,13 +22,14 @@ export default function ReminderNotification({ reminders, onDismiss }) {
       oscillator.connect(gainNode);
       gainNode.connect(ctx.destination);
 
-      // Configure notification sound (pleasant two-tone beep)
+      // Configure notification sound (pleasant two-tone beep) - LOUDER
       oscillator.frequency.setValueAtTime(800, ctx.currentTime);
       oscillator.frequency.setValueAtTime(600, ctx.currentTime + 0.1);
       oscillator.frequency.setValueAtTime(800, ctx.currentTime + 0.2);
 
-      gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+      // Increased gain from 0.3 to 0.8 for significantly louder sound
+      gainNode.gain.setValueAtTime(0.8, ctx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.05, ctx.currentTime + 0.3);
 
       oscillator.start(ctx.currentTime);
       oscillator.stop(ctx.currentTime + 0.3);
@@ -36,17 +39,53 @@ export default function ReminderNotification({ reminders, onDismiss }) {
     }
   }, []);
 
-  useEffect(() => {
-    // Play sound when reminders appear
-    if (reminders.length > 0 && !hasPlayedRef.current) {
+  const startLoopingSound = useCallback(() => {
+    // Play the sound immediately
+    playNotificationSound();
+
+    // Set up looping - play sound every 1.5 seconds (0.3s sound + 1.2s pause)
+    loopIntervalRef.current = setInterval(() => {
       playNotificationSound();
+    }, 1500);
+
+    // Stop looping after 1 minute (60000ms)
+    loopTimeoutRef.current = setTimeout(() => {
+      if (loopIntervalRef.current) {
+        clearInterval(loopIntervalRef.current);
+        loopIntervalRef.current = null;
+      }
+    }, 60000);
+  }, [playNotificationSound]);
+
+  const stopLoopingSound = useCallback(() => {
+    if (loopIntervalRef.current) {
+      clearInterval(loopIntervalRef.current);
+      loopIntervalRef.current = null;
+    }
+    if (loopTimeoutRef.current) {
+      clearTimeout(loopTimeoutRef.current);
+      loopTimeoutRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    // Start looping sound when reminders appear
+    if (reminders.length > 0 && !hasPlayedRef.current) {
+      startLoopingSound();
       hasPlayedRef.current = true;
     }
 
+    // Stop looping and reset when reminders are dismissed
     if (reminders.length === 0) {
+      stopLoopingSound();
       hasPlayedRef.current = false;
     }
-  }, [reminders, playNotificationSound]);
+
+    // Cleanup on unmount
+    return () => {
+      stopLoopingSound();
+    };
+  }, [reminders, startLoopingSound, stopLoopingSound]);
 
   if (reminders.length === 0) return null;
 
