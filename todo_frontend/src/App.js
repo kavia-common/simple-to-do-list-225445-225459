@@ -1,47 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useMemo, useState } from "react";
+import "./App.css";
+import TodoApp from "./components/TodoApp";
+import { loadTodos, saveTodos } from "./utils/storage";
 
 // PUBLIC_INTERFACE
 function App() {
-  const [theme, setTheme] = useState('light');
+  /** Root application component. Hosts the retro-themed to-do app and handles persistence. */
+  const [todos, setTodos] = useState(() => loadTodos());
 
-  // Effect to apply theme to document element
+  // Persist to localStorage whenever todos change
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
+    saveTodos(todos);
+  }, [todos]);
 
-  // PUBLIC_INTERFACE
-  const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
-  };
+  const stats = useMemo(() => {
+    const total = todos.length;
+    const completed = todos.filter((t) => t.completed).length;
+    const active = total - completed;
+    return { total, completed, active };
+  }, [todos]);
 
   return (
     <div className="App">
-      <header className="App-header">
-        <button 
-          className="theme-toggle" 
-          onClick={toggleTheme}
-          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-        >
-          {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
-        </button>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>
-          Current theme: <strong>{theme}</strong>
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <TodoApp todos={todos} setTodos={setTodos} stats={stats} />
     </div>
   );
 }
